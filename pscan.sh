@@ -3,17 +3,18 @@
 name="example"
 global_name=$name
 scope="ranges.txt"
-total=4
+total=5
 # Start fleet using the supplied name, spend $0.1 and self-destruct after 1 hour
-#axiom-fleet $name -i=$total --spend=0.1 --time=1
+axiom-fleet $name -i=$total --spend=0.1 --time=1
 
 # Split the files up by how many instances we have, and then name them appropriately.
 lines=$(wc -l $scope | awk '{ print $1 }')
 echo $lines
 lines_per_file=$(bc <<< "scale=2; $lines / $total" | awk '{print int($1+0.5)}')
+echo $lines_per_file
 split -l $lines_per_file $scope
 a=1
-for f in $(bash -c "ls | grep x")
+for f in $(bash -c "ls | grep -v 'ranges' | grep x")
 do 
     mv $f $a.txt
     a=$((a+1))
@@ -38,7 +39,7 @@ read
 # Download all the output masscan files
 for i in $(axiom-ls -d | grep -E "$global_name*"); do axiom-scp $i:~/$i.txt $i.txt; cat $i.txt >> all.txt; rm -f ./$i.txt; done
 
-cat all.txt | sort -u > $global_name.txt
+cat all.txt | grep -v "#" | sort -u > $global_name.txt
 rm -f all.txt
 
 # Shut down all instances that match $name
