@@ -3,9 +3,9 @@
 name="example"
 global_name=$name
 scope="ranges.txt"
-total=20
+total=5
 # Start fleet using the supplied name, spend $0.1 and self-destruct after 1 hour
-axiom-fleet $name -i=$total --spend=0.4 --time=1
+axiom-fleet $name -i=$total --spend=0.1 --time=1
 
 # Split the files up by how many instances we have, and then name them appropriately.
 lines=$(wc -l $scope | awk '{ print $1 }')
